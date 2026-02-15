@@ -3,7 +3,7 @@ import { handlePaste } from './html-cleaner.js';
 import { resizeImage, downloadAllImages } from './image-handler.js';
 import { initDragSort } from './drag-sort.js';
 import { initPreview } from './preview.js';
-import { generateArticlesHTML, generateFullHTML } from './newsletter-template.js';
+import { generateArticlesHTML, generateFullHTML, DEFAULT_CSS } from './newsletter-template.js';
 
 const articleList = document.getElementById('article-list');
 const emptyState = document.getElementById('empty-state');
@@ -12,6 +12,7 @@ const previewIframe = document.getElementById('preview-iframe');
 const picker = document.getElementById('newsletter-picker');
 const bannerUrlInput = document.getElementById('banner-url');
 const htmlOutput = document.getElementById('html-output');
+const cssEditor = document.getElementById('css-editor');
 const toast = document.getElementById('toast');
 const maxWidthInput = document.getElementById('max-image-width');
 const previewTabs = document.querySelectorAll('.preview-tab');
@@ -92,6 +93,9 @@ function escapeAttr(s) {
 function render(data) {
   titleInput.value = data.title;
   bannerUrlInput.value = data.bannerUrl || '';
+  if (document.activeElement !== cssEditor) {
+    cssEditor.value = data.css || DEFAULT_CSS;
+  }
   emptyState.style.display = data.articles.length ? 'none' : 'block';
 
   const existingCards = new Map();
@@ -275,6 +279,10 @@ titleInput.addEventListener('input', () => {
 
 bannerUrlInput.addEventListener('input', () => {
   state.setBannerUrl(bannerUrlInput.value);
+});
+
+cssEditor.addEventListener('input', () => {
+  state.setCss(cssEditor.value);
 });
 
 previewTabs.forEach((tab) => {

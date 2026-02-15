@@ -217,6 +217,40 @@ body {
   color: #666;
 }
 
+.css-editor {
+  margin-bottom: 12px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  background: #fff;
+}
+
+.css-editor summary {
+  padding: 8px 12px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #666;
+  cursor: pointer;
+}
+
+.css-editor textarea {
+  width: 100%;
+  min-height: 200px;
+  padding: 10px;
+  border: none;
+  border-top: 1px solid #eee;
+  font-family: 'Courier New', monospace;
+  font-size: 12px;
+  line-height: 1.5;
+  resize: vertical;
+  background: #1e1e1e;
+  color: #d4d4d4;
+  border-radius: 0 0 6px 6px;
+}
+
+.css-editor textarea:focus {
+  outline: none;
+}
+
 .article-list {
   display: flex;
   flex-direction: column;
