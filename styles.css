@@ -74,6 +74,17 @@ body {
   flex: 1;
 }
 
+.github-link {
+  color: #666;
+  display: flex;
+  align-items: center;
+  margin-left: 4px;
+}
+
+.github-link:hover {
+  color: #333;
+}
+
 .toolbar label {
   font-size: 13px;
   display: flex;
