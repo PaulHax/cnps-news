@@ -12,7 +12,8 @@ export const DEFAULT_CSS = `body { margin: 0; padding: 0; background-color: #f4f
 .article h2 { font-family: ${FONT_FAMILY}; color: #333; margin: 0 0 10px 0; }
 .article-body { font-size: 120%; font-family: ${FONT_FAMILY}; color: #333; }
 .article-img-block { display: block; margin: 10px 0; }
-.article-img-float { margin-bottom: 5px; }
+.article-img-right { float: right; margin: 0 0 5px 5px; }
+.article-img-left { float: left; margin: 0 5px 5px 0; }
 .article::after { content: ""; display: block; clear: both; }
 .footer { padding: 20px; text-align: center; font-family: ${FONT_FAMILY}; }
 .footer-buttons { display: flex; justify-content: center; gap: 20px; }
@@ -26,25 +27,23 @@ function articleImageHTML(img) {
   const align = img.align || 'right';
   const width = img.width || 300;
   const alt = img.alt || '';
-  if (align === 'none') {
-    return `<img src="${src}" width="${width}" alt="${alt}" class="article-img-block" />`;
-  }
-  return `<img src="${src}" width="${width}" alt="${alt}" align="${align}" hspace="5" class="article-img-float" />`;
+  const cls = align === 'none' ? 'article-img-block' : `article-img-${align}`;
+  return `<img src="${src}" width="${width}" alt="${alt}" class="${cls}" />`;
 }
 
 function articleHTML(article) {
   const images = article.images.map(articleImageHTML).join('\n');
-  const body = article.body || '<p></p>';
+  const body = article.body || '';
   return `<div class="article">
   <h2>${article.title || 'Untitled'}</h2>
   ${images}
-  <span class="article-body">${body}</span>
+  <div class="article-body">${body}</div>
 </div>`;
 }
 
 function headerHTML(title, bannerUrl) {
   const banner = bannerUrl
-    ? `<div class="banner"><img src="${bannerUrl}" width="600" alt="CNPS Marin" /></div>`
+    ? `<div class="banner"><img src="${bannerUrl}" alt="CNPS Marin" /></div>`
     : '';
   return `${banner}
 <div class="header">
@@ -58,11 +57,11 @@ function footerHTML() {
     <a href="[JOIN_RENEW_URL]" target="_blank" class="cta-btn">Join / Renew</a>
     <a href="[DONATE_URL]" target="_blank" class="cta-btn">Donate</a>
   </div>
-  <p class="social-links">
+  <div class="social-links">
     <a href="[WEBSITE_URL]" target="_blank" class="social-link">Website</a> |
     <a href="[FACEBOOK_URL]" target="_blank" class="social-link">Facebook</a> |
     <a href="[INSTAGRAM_URL]" target="_blank" class="social-link">Instagram</a>
-  </p>
+  </div>
 </div>
 <div class="footer-bar"></div>`;
 }
