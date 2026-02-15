@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CNPS Marin Newsletter Builder</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="toolbar">
+    <h1>CNPS Marin</h1>
+    <select id="newsletter-picker"></select>
+    <button id="new-newsletter-btn">New</button>
+    <button id="delete-newsletter-btn" class="danger">Delete</button>
+    <div class="spacer"></div>
+    <label>
+      Max image width
+      <input type="number" id="max-image-width" value="300" min="100" max="600" step="50" />
+    </label>
+    <button id="download-images-btn" class="secondary">Download Images</button>
+    <div class="copy-options">
+      <button id="copy-articles-btn">Copy Articles HTML</button>
+      <button id="copy-full-btn">Copy Full HTML</button>
+    </div>
+  </div>
+
+  <div class="main">
+    <div class="editor-panel">
+      <input
+        type="text"
+        class="newsletter-title-input"
+        id="newsletter-title"
+        placeholder="Newsletter Title (e.g. May 2024 Newsletter)"
+      />
+      <div class="article-list" id="article-list"></div>
+      <div class="empty-state" id="empty-state">
+        <p>No articles yet.</p>
+      </div>
+      <button id="add-article-btn" class="add-article-btn">+ Add Article</button>
+    </div>
+
+    <div class="preview-panel">
+      <div class="preview-header">
+        <span>Preview</span>
+      </div>
+      <iframe id="preview-iframe" title="Newsletter preview"></iframe>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>
