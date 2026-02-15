@@ -98,22 +98,39 @@ function render(data) {
   }
   emptyState.style.display = data.articles.length ? 'none' : 'block';
 
-  const existingCards = new Map();
-  for (const card of articleList.children) {
-    existingCards.set(card.dataset.articleId, card);
-  }
+  const existingIds = [...articleList.children].map((c) => c.dataset.articleId);
+  const newIds = data.articles.map((a) => a.id);
+  const orderChanged =
+    existingIds.length !== newIds.length ||
+    existingIds.some((id, i) => id !== newIds[i]);
 
-  const fragment = document.createDocumentFragment();
-  for (const article of data.articles) {
-    if (article.id === focusedArticleId && existingCards.has(article.id)) {
-      const card = existingCards.get(article.id);
-      card.querySelector('.article-title-display').textContent = article.title || 'Untitled Article';
-      fragment.appendChild(card);
-    } else {
-      fragment.appendChild(renderArticleCard(article));
+  if (orderChanged) {
+    const existingCards = new Map();
+    for (const card of articleList.children) {
+      existingCards.set(card.dataset.articleId, card);
+    }
+    const fragment = document.createDocumentFragment();
+    for (const article of data.articles) {
+      if (article.id === focusedArticleId && existingCards.has(article.id)) {
+        const card = existingCards.get(article.id);
+        card.querySelector('.article-title-display').textContent = article.title || 'Untitled Article';
+        fragment.appendChild(card);
+      } else {
+        fragment.appendChild(renderArticleCard(article));
+      }
+    }
+    articleList.replaceChildren(fragment);
+  } else {
+    for (const article of data.articles) {
+      const card = articleList.querySelector(`[data-article-id="${article.id}"]`);
+      if (!card) continue;
+      if (article.id === focusedArticleId) {
+        card.querySelector('.article-title-display').textContent = article.title || 'Untitled Article';
+      } else {
+        card.replaceWith(renderArticleCard(article));
+      }
     }
   }
-  articleList.replaceChildren(fragment);
   updatePreview();
 }
 
