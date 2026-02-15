@@ -10,10 +10,14 @@ const emptyState = document.getElementById('empty-state');
 const titleInput = document.getElementById('newsletter-title');
 const previewIframe = document.getElementById('preview-iframe');
 const picker = document.getElementById('newsletter-picker');
+const bannerUrlInput = document.getElementById('banner-url');
+const htmlOutput = document.getElementById('html-output');
 const toast = document.getElementById('toast');
 const maxWidthInput = document.getElementById('max-image-width');
+const previewTabs = document.querySelectorAll('.preview-tab');
 
 let focusedArticleId = null;
+let activeTab = 'preview';
 
 function showToast(msg) {
   toast.textContent = msg;
@@ -87,6 +91,7 @@ function escapeAttr(s) {
 
 function render(data) {
   titleInput.value = data.title;
+  bannerUrlInput.value = data.bannerUrl || '';
   emptyState.style.display = data.articles.length ? 'none' : 'block';
 
   const existingCards = new Map();
@@ -105,7 +110,12 @@ function render(data) {
     }
   }
   articleList.replaceChildren(fragment);
+  updatePreview();
+}
+
+function updatePreview() {
   preview.render();
+  htmlOutput.value = generateFullHTML(state.getState());
 }
 
 function renderPicker() {
@@ -261,6 +271,19 @@ document.getElementById('download-images-btn').addEventListener('click', () => {
 
 titleInput.addEventListener('input', () => {
   state.setTitle(titleInput.value);
+});
+
+bannerUrlInput.addEventListener('input', () => {
+  state.setBannerUrl(bannerUrlInput.value);
+});
+
+previewTabs.forEach((tab) => {
+  tab.addEventListener('click', () => {
+    activeTab = tab.dataset.tab;
+    previewTabs.forEach((t) => t.classList.toggle('active', t === tab));
+    previewIframe.style.display = activeTab === 'preview' ? '' : 'none';
+    htmlOutput.classList.toggle('active', activeTab === 'html');
+  });
 });
 
 document.getElementById('new-newsletter-btn').addEventListener('click', () => {

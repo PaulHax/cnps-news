@@ -2,7 +2,7 @@ const FONT_FAMILY = "'Nunito Sans', arial, helvetica, sans-serif";
 const GREEN = '#9bba77';
 const ORANGE = '#F99D25';
 const GRAY = '#646569';
-const BANNER_URL = '[BANNER_IMAGE_URL]';
+
 
 function articleImageHTML(img) {
   const src = img.dataUrl || `[UPLOAD_TO_LUMINATE: ${img.filename}]`;
@@ -29,12 +29,15 @@ function articleHTML(article) {
 </tr>`;
 }
 
-function headerHTML(title) {
-  return `<tr>
+function headerHTML(title, bannerUrl) {
+  const bannerRow = bannerUrl
+    ? `<tr>
   <td style="padding: 0;">
-    <img src="${BANNER_URL}" width="600" alt="CNPS Marin" style="display:block; width:100%; max-width:600px;" />
+    <img src="${bannerUrl}" width="600" alt="CNPS Marin" style="display:block; width:100%; max-width:600px;" />
   </td>
-</tr>
+</tr>`
+    : '';
+  return `${bannerRow}
 <tr>
   <td style="background-color: ${GREEN}; padding: 15px 20px; text-align: center;">
     <h1 style="font-family: ${FONT_FAMILY}; color: #fff; margin: 0; font-size: 28px;">${title}</h1>
@@ -72,7 +75,7 @@ export function generateArticlesHTML(articles) {
 }
 
 export function generateFullHTML(newsletter) {
-  const { title, articles } = newsletter;
+  const { title, bannerUrl, articles } = newsletter;
   return `<!DOCTYPE html>
 <html>
 <head>
@@ -83,7 +86,7 @@ export function generateFullHTML(newsletter) {
 <body style="margin: 0; padding: 0; background-color: #f4f4f4;">
 <center>
 <table role="presentation" class="email-container" cellpadding="0" cellspacing="0" width="600" style="margin: 0 auto; background-color: #ffffff; max-width: 600px;">
-${headerHTML(title)}
+${headerHTML(title, bannerUrl)}
 ${articles.map(articleHTML).join('\n')}
 ${footerHTML()}
 </table>

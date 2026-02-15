@@ -12,6 +12,7 @@ function createNewsletter(name = 'Untitled Newsletter') {
   return {
     name,
     title: name,
+    bannerUrl: 'http://cnps.convio.net/images/content/pagebuilder/simple-header.jpg',
     articles: [],
   };
 }
@@ -130,6 +131,11 @@ function update() {
 
 export function setTitle(title) {
   state.title = title;
+  update();
+}
+
+export function setBannerUrl(url) {
+  state.bannerUrl = url;
   update();
 }
 

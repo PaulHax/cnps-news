@@ -35,6 +35,12 @@
         id="newsletter-title"
         placeholder="Newsletter Title (e.g. May 2024 Newsletter)"
       />
+      <input
+        type="text"
+        class="banner-url-input"
+        id="banner-url"
+        placeholder="Banner image URL"
+      />
       <div class="article-list" id="article-list"></div>
       <div class="empty-state" id="empty-state">
         <p>No articles yet.</p>
@@ -44,9 +50,13 @@
 
     <div class="preview-panel">
       <div class="preview-header">
-        <span>Preview</span>
+        <div class="preview-tabs">
+          <button class="preview-tab active" data-tab="preview">Preview</button>
+          <button class="preview-tab" data-tab="html">HTML</button>
+        </div>
       </div>
       <iframe id="preview-iframe" title="Newsletter preview"></iframe>
+      <textarea id="html-output" class="html-output" readonly></textarea>
     </div>
   </div>
 
