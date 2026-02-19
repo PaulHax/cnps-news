@@ -230,10 +230,11 @@ articleList.addEventListener('focusout', (e) => {
 });
 
 articleList.addEventListener('paste', (e) => {
-  if (!e.target.classList.contains('paste-area')) return;
+  const pasteArea = e.target.closest('.paste-area');
+  if (!pasteArea) return;
   const cleaned = handlePaste(e);
-  e.target.innerHTML = cleaned;
-  const articleId = getArticleId(e.target);
+  pasteArea.innerHTML = cleaned;
+  const articleId = getArticleId(pasteArea);
   if (articleId) state.updateArticle(articleId, { body: cleaned });
 });
 
