@@ -75,10 +75,27 @@ function removeEmptyInlines(container) {
   });
 }
 
+function unwrapFakeBoldItalic(html) {
+  const temp = document.createElement('div');
+  temp.innerHTML = html;
+  temp.querySelectorAll('b, strong').forEach((el) => {
+    if (el.style.fontWeight === 'normal' || el.style.fontWeight === '400') {
+      el.replaceWith(...el.childNodes);
+    }
+  });
+  temp.querySelectorAll('i, em').forEach((el) => {
+    if (el.style.fontStyle === 'normal') {
+      el.replaceWith(...el.childNodes);
+    }
+  });
+  return temp.innerHTML;
+}
+
 export function cleanHTML(dirty) {
   if (!dirty || !dirty.trim()) return '';
 
-  const sanitized = DOMPurify.sanitize(dirty, PURIFY_CONFIG);
+  const preCleaned = unwrapFakeBoldItalic(dirty);
+  const sanitized = DOMPurify.sanitize(preCleaned, PURIFY_CONFIG);
 
   const temp = document.createElement('div');
   temp.innerHTML = sanitized;
