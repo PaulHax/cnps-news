@@ -109,7 +109,7 @@ test('copy full HTML to clipboard', async ({ context, page }) => {
   await page.click('#copy-full-btn');
   const clipText = await page.evaluate(() => navigator.clipboard.readText());
   expect(clipText).toContain('Copy Test');
-  expect(clipText).toContain('email-container');
+  expect(clipText).toContain('class="newsletter"');
   expect(clipText).toContain('9bba77');
 });
 
