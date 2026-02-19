@@ -4,13 +4,14 @@ const ORANGE = '#F99D25';
 const GRAY = '#646569';
 
 export const DEFAULT_CSS = `body { margin: 0; padding: 0; background-color: #f4f4f4; }
-.newsletter { margin: 0 auto; max-width: 600px; background-color: #ffffff; }
-.banner img { display: block; width: 100%; max-width: 600px; }
+.newsletter { margin: 0 auto; background-color: #ffffff; }
+.banner img { display: block; width: 100%; }
 .header { background-color: ${GREEN}; padding: 15px 20px; text-align: center; }
 .header h1 { font-family: ${FONT_FAMILY}; color: #fff; margin: 0; font-size: 28px; }
 .article { border-bottom: 20px solid ${GREEN}; padding: 15px 20px; font-family: ${FONT_FAMILY}; }
-.article h2 { font-family: ${FONT_FAMILY}; color: #333; margin: 0 0 10px 0; }
-.article-body { font-size: 120%; font-family: ${FONT_FAMILY}; color: #333; }
+.article h2 { font-family: ${FONT_FAMILY}; color: #333; margin: 0 0 10px 0; font-size: 21.5pt; }
+.article-body { font-family: ${FONT_FAMILY}; color: #333; }
+.article-body p { font-size: 14.5pt; }
 .article-img-block { display: block; margin: 10px 0; }
 .article-img-right { float: right; margin: 0 0 5px 5px; }
 .article-img-left { float: left; margin: 0 5px 5px 0; }
@@ -34,25 +35,25 @@ function articleImageHTML(img) {
 function articleHTML(article) {
   const images = article.images.map(articleImageHTML).join('\n');
   const body = article.body || '';
-  return `<div class="article">
+  return `<tr><td class="article">
   <h2>${article.title || 'Untitled'}</h2>
   ${images}
   <div class="article-body">${body}</div>
-</div>`;
+</td></tr>`;
 }
 
 function headerHTML(title, bannerUrl) {
   const banner = bannerUrl
-    ? `<div class="banner"><img src="${bannerUrl}" alt="CNPS Marin" /></div>`
+    ? `<tr><td class="banner"><img src="${bannerUrl}" alt="CNPS Marin" /></td></tr>`
     : '';
   return `${banner}
-<div class="header">
+<tr><td class="header">
   <h1>${title}</h1>
-</div>`;
+</td></tr>`;
 }
 
 function footerHTML() {
-  return `<div class="footer">
+  return `<tr><td class="footer">
   <div class="footer-buttons">
     <a href="[JOIN_RENEW_URL]" target="_blank" class="cta-btn">Join / Renew</a>
     <a href="[DONATE_URL]" target="_blank" class="cta-btn">Donate</a>
@@ -62,8 +63,8 @@ function footerHTML() {
     <a href="[FACEBOOK_URL]" target="_blank" class="social-link">Facebook</a> |
     <a href="[INSTAGRAM_URL]" target="_blank" class="social-link">Instagram</a>
   </div>
-</div>
-<div class="footer-bar"></div>`;
+</td></tr>
+<tr><td class="footer-bar"></td></tr>`;
 }
 
 export function generateArticlesHTML(articles) {
@@ -84,11 +85,11 @@ ${styles}
 </style>
 </head>
 <body>
-<div class="newsletter">
+<table class="newsletter" width="600" cellpadding="0" cellspacing="0">
 ${headerHTML(title, bannerUrl)}
 ${articles.map(articleHTML).join('\n')}
 ${footerHTML()}
-</div>
+</table>
 </body>
 </html>`;
 }
