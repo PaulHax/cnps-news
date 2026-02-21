@@ -4,8 +4,6 @@ const GREEN = '#9bba77';
 export const DEFAULT_CSS = `body { margin: 0; padding: 0; background-color: #f4f4f4; }
 .newsletter { margin: 0 auto; background-color: #ffffff; }
 .banner img { display: block; width: 100%; }
-.header { background-color: #ffffff; padding: 0; text-align: center; }
-.header h1 { font-family: ${FONT_FAMILY}; color: #333; margin: 0; font-size: 21.5pt; }
 .article { padding: 15px 20px; font-family: ${FONT_FAMILY}; }
 .article h2 { font-family: ${FONT_FAMILY}; color: #333; margin: 0 0 5px 0; font-size: 18pt; }
 .article-body { font-family: ${FONT_FAMILY}; color: #333; }
@@ -40,14 +38,10 @@ function articleHTML(article) {
 </td></tr>`;
 }
 
-function headerHTML(title, bannerUrl) {
-  const banner = bannerUrl
-    ? `<tr><td class="banner"><img src="${bannerUrl}" alt="CNPS Marin" /></td></tr>`
-    : '';
-  return `${banner}
-<tr><td class="header">
-  <h1>${title}</h1>
-</td></tr>`;
+function bannerHTML(bannerUrl) {
+  if (!bannerUrl) return '';
+  return `<tr><td class="banner"><img src="${bannerUrl}" alt="CNPS Marin" /></td></tr>
+${dividerHTML()}`;
 }
 
 
@@ -77,7 +71,7 @@ ${styles}
 </head>
 <body>
 <table class="newsletter" width="600" align="center" cellpadding="0" cellspacing="0">
-${headerHTML(title, bannerUrl)}
+${bannerHTML(bannerUrl)}
 ${articlesWithDividersHTML(articles)}
 </table>
 </body>
