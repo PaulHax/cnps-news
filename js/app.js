@@ -303,6 +303,11 @@ cssEditor.addEventListener('input', () => {
   state.setCss(cssEditor.value);
 });
 
+document.getElementById('reset-css-btn').addEventListener('click', () => {
+  cssEditor.value = DEFAULT_CSS;
+  state.setCss('');
+});
+
 previewTabs.forEach((tab) => {
   tab.addEventListener('click', () => {
     activeTab = tab.dataset.tab;

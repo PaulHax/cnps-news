@@ -232,6 +232,21 @@ body {
   cursor: pointer;
 }
 
+#reset-css-btn {
+  margin: 4px 12px 0;
+  padding: 4px 12px;
+  font-size: 12px;
+  background: #6c757d;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+#reset-css-btn:hover {
+  background: #5a6268;
+}
+
 .css-editor textarea {
   width: 100%;
   min-height: 200px;
