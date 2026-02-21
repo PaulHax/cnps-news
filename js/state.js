@@ -36,6 +36,7 @@ function persist() {
   const serializable = {
     name: state.name,
     title: state.title,
+    css: state.css,
     articles: state.articles.map((a) => ({
       ...a,
       images: a.images.map(({ blob, dataUrl, ...rest }) => rest),
