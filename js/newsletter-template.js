@@ -4,6 +4,7 @@ const GREEN = '#9bba77';
 export const DEFAULT_CSS = `body { margin: 0; padding: 0; background-color: #f4f4f4; }
 .newsletter { margin: 0 auto; background-color: #ffffff; }
 .banner img { display: block; width: 100%; }
+.newsletter-title { padding: 12px 20px 10px; font-family: ${FONT_FAMILY}; font-size: 22pt; font-weight: bold; color: #333; margin: 0; }
 .article { padding: 15px 20px; font-family: ${FONT_FAMILY}; }
 .article h2 { font-family: ${FONT_FAMILY}; color: #333; margin: 0 0 5px 0; font-size: 18pt; }
 .article-body { font-family: ${FONT_FAMILY}; color: #333; }
@@ -40,7 +41,12 @@ function articleHTML(article) {
 
 function bannerHTML(bannerUrl) {
   if (!bannerUrl) return '';
-  return `<tr><td class="banner"><img src="${bannerUrl}" alt="CNPS Marin" /></td></tr>
+  return `<tr><td class="banner"><img src="${bannerUrl}" alt="CNPS Marin" /></td></tr>`;
+}
+
+function titleHTML(title) {
+  if (!title) return '';
+  return `<tr><td class="newsletter-title" style="padding:12px 20px 10px;font-family:${FONT_FAMILY};font-size:22pt;font-weight:bold;color:#333;">${title}</td></tr>
 ${dividerHTML()}`;
 }
 
@@ -72,6 +78,7 @@ ${styles}
 <body>
 <table class="newsletter" width="600" align="center" cellpadding="0" cellspacing="0">
 ${bannerHTML(bannerUrl)}
+${titleHTML(title)}
 ${articlesWithDividersHTML(articles)}
 </table>
 </body>
