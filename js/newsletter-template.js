@@ -15,26 +15,14 @@ export const DEFAULT_CSS = `body { margin: 0; padding: 0; background-color: #f4f
 .divider { background-color: ${GREEN}; height: 20px; padding: 0; font-size: 0; line-height: 0; }
 `;
 
-function articleImageHTML(img) {
-  const src = img.dataUrl || `[UPLOAD_TO_LUMINATE: ${img.filename}]`;
-  const align = img.align || 'right';
-  const width = img.width || 300;
-  const alt = img.alt || '';
-  const cls = align === 'none' ? 'article-img-block' : `article-img-${align}`;
-  return `<img src="${src}" width="${width}" alt="${alt}" class="${cls}" />`;
-}
-
 function dividerHTML() {
   return `<tr><td class="divider" style="background-color:${GREEN};height:20px;padding:0;font-size:0;line-height:0;">&nbsp;</td></tr>`;
 }
 
 function articleHTML(article) {
-  const images = article.images.map(articleImageHTML).join('\n');
-  const body = article.body || '';
   return `<tr><td class="article">
   <h2>${article.title || 'Untitled'}</h2>
-  ${images}
-  <div class="article-body">${body}</div>
+  <div class="article-body">${article.body || ''}</div>
   <div style="clear:both;"></div>
 </td></tr>`;
 }
@@ -50,6 +38,38 @@ function titleHTML(title) {
 ${dividerHTML()}`;
 }
 
+export function parseBodyIntoArticles(bodyHTML) {
+  if (!bodyHTML || !bodyHTML.trim()) return [];
+
+  const temp = document.createElement('div');
+  temp.innerHTML = bodyHTML;
+
+  const articles = [];
+  let currentTitle = '';
+  let currentBody = '';
+
+  const flushArticle = () => {
+    if (currentTitle || currentBody.trim()) {
+      articles.push({ title: currentTitle, body: currentBody.trim() });
+    }
+    currentTitle = '';
+    currentBody = '';
+  };
+
+  for (const node of [...temp.childNodes]) {
+    if (node.nodeType === Node.ELEMENT_NODE && node.tagName === 'H2') {
+      flushArticle();
+      currentTitle = node.textContent;
+    } else if (node.nodeType === Node.ELEMENT_NODE) {
+      currentBody += node.outerHTML;
+    } else if (node.nodeType === Node.TEXT_NODE && node.textContent.trim()) {
+      currentBody += node.textContent;
+    }
+  }
+
+  flushArticle();
+  return articles;
+}
 
 function articlesWithDividersHTML(articles) {
   return articles.map((article, i) => {
@@ -58,13 +78,15 @@ function articlesWithDividersHTML(articles) {
   }).join('\n');
 }
 
-export function generateArticlesHTML(articles) {
+export function generateArticlesHTML(body) {
+  const articles = parseBodyIntoArticles(body);
   return articlesWithDividersHTML(articles);
 }
 
 export function generateFullHTML(newsletter) {
-  const { title, bannerUrl, css, articles } = newsletter;
+  const { title, bannerUrl, css, body } = newsletter;
   const styles = css || DEFAULT_CSS;
+  const articles = parseBodyIntoArticles(body);
   return `<!DOCTYPE html>
 <html>
 <head>

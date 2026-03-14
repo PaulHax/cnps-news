@@ -45,7 +45,6 @@ export function downloadImage(imageData) {
   a.click();
 }
 
-export function downloadAllImages(articles) {
-  const images = articles.flatMap((a) => a.images.filter((img) => img.blob));
-  images.forEach((img) => downloadImage(img));
+export function downloadAllImages(images) {
+  images.filter((img) => img.blob).forEach((img) => downloadImage(img));
 }

@@ -49,11 +49,14 @@
         <button id="reset-css-btn" type="button">Reset to Defaults</button>
         <textarea id="css-editor" spellcheck="false"></textarea>
       </details>
-      <div class="article-list" id="article-list"></div>
-      <div class="empty-state" id="empty-state">
-        <p>No articles yet.</p>
+      <label class="content-label">Content (paste from Word — H2 headings become article dividers)</label>
+      <div class="paste-area" id="paste-area" contenteditable="true"></div>
+      <label class="content-label">Images</label>
+      <div class="image-drop-zone" id="image-drop-zone">
+        Drop images here or click to browse
+        <input type="file" accept="image/*" multiple />
       </div>
-      <button id="add-article-btn" class="add-article-btn">+ Add Article</button>
+      <div class="image-thumbnails" id="image-thumbnails"></div>
     </div>
 
     <div class="preview-panel">
