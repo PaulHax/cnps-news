@@ -14,17 +14,8 @@ function createNewsletter(name = 'Untitled Newsletter') {
     title: name,
     bannerUrl: 'http://cnps.convio.net/images/content/pagebuilder/simple-header.jpg',
     css: '',
-    articles: [],
-  };
-}
-
-function createArticle() {
-  return {
-    id: crypto.randomUUID(),
-    title: '',
     body: '',
     images: [],
-    collapsed: false,
   };
 }
 
@@ -36,11 +27,10 @@ function persist() {
   const serializable = {
     name: state.name,
     title: state.title,
+    bannerUrl: state.bannerUrl,
     css: state.css,
-    articles: state.articles.map((a) => ({
-      ...a,
-      images: a.images.map(({ blob, dataUrl, ...rest }) => rest),
-    })),
+    body: state.body,
+    images: state.images.map(({ blob, dataUrl, ...rest }) => rest),
   };
   const all = getNewsletterList();
   if (!all.includes(state.name)) {
@@ -58,11 +48,9 @@ function persistImages() {
   const store = tx.objectStore(IMAGE_STORE);
   store.delete(state.name);
   const imageData = {};
-  for (const article of state.articles) {
-    for (const img of article.images) {
-      if (img.blob) {
-        imageData[img.id] = { blob: img.blob, articleId: article.id };
-      }
+  for (const img of state.images) {
+    if (img.blob) {
+      imageData[img.id] = { blob: img.blob };
     }
   }
   if (Object.keys(imageData).length > 0) {
@@ -146,66 +134,26 @@ export function setCss(css) {
   update();
 }
 
-export function addArticle() {
-  const article = createArticle();
-  state.articles.push(article);
-  update();
-  return article;
-}
-
-export function removeArticle(id) {
-  state.articles = state.articles.filter((a) => a.id !== id);
+export function setBody(body) {
+  state.body = body;
   update();
 }
 
-export function updateArticle(id, changes) {
-  state.articles = state.articles.map((a) =>
-    a.id === id ? { ...a, ...changes } : a
+export function addImage(imageData) {
+  state.images = [...state.images, { id: crypto.randomUUID(), width: 300, alt: '', align: 'right', ...imageData }];
+  update();
+}
+
+export function removeImage(imageId) {
+  state.images = state.images.filter((img) => img.id !== imageId);
+  update();
+}
+
+export function updateImage(imageId, changes) {
+  state.images = state.images.map((img) =>
+    img.id === imageId ? { ...img, ...changes } : img
   );
   update();
-}
-
-export function reorderArticles(fromIndex, toIndex) {
-  const articles = [...state.articles];
-  const [moved] = articles.splice(fromIndex, 1);
-  articles.splice(toIndex, 0, moved);
-  state.articles = articles;
-  update();
-}
-
-export function addImage(articleId, imageData) {
-  state.articles = state.articles.map((a) =>
-    a.id === articleId
-      ? { ...a, images: [...a.images, { id: crypto.randomUUID(), width: 300, alt: '', align: 'right', ...imageData }] }
-      : a
-  );
-  update();
-}
-
-export function removeImage(articleId, imageId) {
-  state.articles = state.articles.map((a) =>
-    a.id === articleId
-      ? { ...a, images: a.images.filter((img) => img.id !== imageId) }
-      : a
-  );
-  update();
-}
-
-export function updateImage(articleId, imageId, changes) {
-  state.articles = state.articles.map((a) =>
-    a.id === articleId
-      ? { ...a, images: a.images.map((img) => img.id === imageId ? { ...img, ...changes } : img) }
-      : a
-  );
-  update();
-}
-
-export function toggleCollapsed(id) {
-  const article = state.articles.find((a) => a.id === id);
-  if (article) {
-    article.collapsed = !article.collapsed;
-    update();
-  }
 }
 
 export async function loadNewsletter(name) {
@@ -214,15 +162,22 @@ export async function loadNewsletter(name) {
     if (!data) {
       state = createNewsletter(name);
     } else {
-      state = data;
+      // Migrate from old per-article format
+      if (data.articles && !data.body) {
+        data.body = data.articles.map((a) => {
+          const titleHtml = a.title ? `<h2>${a.title}</h2>` : '';
+          return titleHtml + (a.body || '');
+        }).join('');
+        data.images = data.articles.flatMap((a) => a.images || []);
+        delete data.articles;
+      }
+      state = { ...createNewsletter(name), ...data };
       const imageMap = await loadImages(name);
-      for (const article of state.articles) {
-        for (const img of article.images) {
-          const stored = imageMap[img.id];
-          if (stored) {
-            img.blob = stored.blob;
-            img.dataUrl = URL.createObjectURL(stored.blob);
-          }
+      for (const img of state.images) {
+        const stored = imageMap[img.id];
+        if (stored) {
+          img.blob = stored.blob;
+          img.dataUrl = URL.createObjectURL(stored.blob);
         }
       }
     }
