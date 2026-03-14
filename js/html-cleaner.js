@@ -75,9 +75,34 @@ function removeEmptyInlines(container) {
   });
 }
 
-function unwrapFakeBoldItalic(html) {
+function preCleanBoldItalic(html) {
   const temp = document.createElement('div');
   temp.innerHTML = html;
+
+  // Convert styled spans to semantic tags (Google Docs uses these)
+  temp.querySelectorAll('span').forEach((el) => {
+    const fw = el.style.fontWeight;
+    const isBold = fw === 'bold' || fw === '700' || parseInt(fw) >= 700;
+    const isItalic = el.style.fontStyle === 'italic';
+
+    if (isBold && isItalic) {
+      const strong = document.createElement('strong');
+      const em = document.createElement('em');
+      em.innerHTML = el.innerHTML;
+      strong.appendChild(em);
+      el.replaceWith(strong);
+    } else if (isBold) {
+      const strong = document.createElement('strong');
+      strong.innerHTML = el.innerHTML;
+      el.replaceWith(strong);
+    } else if (isItalic) {
+      const em = document.createElement('em');
+      em.innerHTML = el.innerHTML;
+      el.replaceWith(em);
+    }
+  });
+
+  // Strip fake bold/italic (tags that override themselves to normal)
   temp.querySelectorAll('b, strong').forEach((el) => {
     if (el.style.fontWeight === 'normal' || el.style.fontWeight === '400') {
       el.replaceWith(...el.childNodes);
@@ -88,13 +113,14 @@ function unwrapFakeBoldItalic(html) {
       el.replaceWith(...el.childNodes);
     }
   });
+
   return temp.innerHTML;
 }
 
 export function cleanHTML(dirty) {
   if (!dirty || !dirty.trim()) return '';
 
-  const preCleaned = unwrapFakeBoldItalic(dirty);
+  const preCleaned = preCleanBoldItalic(dirty);
   const sanitized = DOMPurify.sanitize(preCleaned, PURIFY_CONFIG);
 
   const temp = document.createElement('div');
