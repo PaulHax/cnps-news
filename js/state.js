@@ -12,7 +12,6 @@ function createNewsletter(name = 'Untitled Newsletter') {
   return {
     name,
     title: name,
-    bannerUrl: 'http://cnps.convio.net/images/content/pagebuilder/simple-header.jpg',
     css: '',
     body: '',
     images: [],
@@ -27,7 +26,6 @@ function persist() {
   const serializable = {
     name: state.name,
     title: state.title,
-    bannerUrl: state.bannerUrl,
     css: state.css,
     body: state.body,
     images: state.images.map(({ blob, dataUrl, ...rest }) => rest),
@@ -121,11 +119,6 @@ function update() {
 
 export function setTitle(title) {
   state.title = title;
-  update();
-}
-
-export function setBannerUrl(url) {
-  state.bannerUrl = url;
   update();
 }
 

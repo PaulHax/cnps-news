@@ -3,12 +3,11 @@ const GREEN = '#9bba77';
 
 export const DEFAULT_CSS = `body { margin: 0; padding: 0; background-color: #f4f4f4; }
 .newsletter { margin: 0 auto; background-color: #ffffff; }
-.banner img { display: block; width: 100%; }
 .newsletter-title { padding: 12px 20px 10px; font-family: ${FONT_FAMILY}; font-size: 22pt; font-weight: bold; color: #333; margin: 0; }
 .article { padding: 15px 20px; font-family: ${FONT_FAMILY}; }
 .article h2 { font-family: ${FONT_FAMILY}; color: #333; margin: 0 0 5px 0; font-size: 18pt; }
 .article-body { font-family: ${FONT_FAMILY}; color: #333; }
-.article-body p { font-size: 14.5pt; }
+.article-body p { font-size: 1.2rem; }
 .article-img-block { display: block; margin: 10px 0; }
 .article-img-right { float: right; margin: 0 0 5px 5px; }
 .article-img-left { float: left; margin: 0 5px 5px 0; }
@@ -27,15 +26,24 @@ function articleHTML(article) {
 </td></tr>`;
 }
 
-function bannerHTML(bannerUrl) {
-  if (!bannerUrl) return '';
-  return `<tr><td class="banner"><img src="${bannerUrl}" alt="CNPS Marin" /></td></tr>`;
-}
-
 function titleHTML(title) {
   if (!title) return '';
   return `<tr><td class="newsletter-title" style="padding:12px 20px 10px;font-family:${FONT_FAMILY};font-size:22pt;font-weight:bold;color:#333;">${title}</td></tr>
 ${dividerHTML()}`;
+}
+
+function stripTrailingEmpty(bodyHTML) {
+  const wrap = document.createElement('div');
+  wrap.innerHTML = bodyHTML;
+  while (wrap.lastElementChild) {
+    const el = wrap.lastElementChild;
+    if (!el.textContent.trim() && !el.querySelector('img')) {
+      el.remove();
+    } else {
+      break;
+    }
+  }
+  return wrap.innerHTML.trim();
 }
 
 export function parseBodyIntoArticles(bodyHTML) {
@@ -49,8 +57,9 @@ export function parseBodyIntoArticles(bodyHTML) {
   let currentBody = '';
 
   const flushArticle = () => {
-    if (currentTitle || currentBody.trim()) {
-      articles.push({ title: currentTitle, body: currentBody.trim() });
+    const cleaned = stripTrailingEmpty(currentBody);
+    if (currentTitle || cleaned) {
+      articles.push({ title: currentTitle, body: cleaned });
     }
     currentTitle = '';
     currentBody = '';
@@ -84,7 +93,7 @@ export function generateArticlesHTML(body) {
 }
 
 export function generateFullHTML(newsletter) {
-  const { title, bannerUrl, css, body } = newsletter;
+  const { title, css, body } = newsletter;
   const styles = css || DEFAULT_CSS;
   const articles = parseBodyIntoArticles(body);
   return `<!DOCTYPE html>
@@ -92,14 +101,12 @@ export function generateFullHTML(newsletter) {
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>${title}</title>
 <style>
 ${styles}
 </style>
 </head>
 <body>
 <table class="newsletter" width="600" align="center" cellpadding="0" cellspacing="0">
-${bannerHTML(bannerUrl)}
 ${titleHTML(title)}
 ${articlesWithDividersHTML(articles)}
 </table>

@@ -8,7 +8,6 @@ const pasteArea = document.getElementById('paste-area');
 const titleInput = document.getElementById('newsletter-title');
 const previewIframe = document.getElementById('preview-iframe');
 const picker = document.getElementById('newsletter-picker');
-const bannerUrlInput = document.getElementById('banner-url');
 const htmlOutput = document.getElementById('html-output');
 const cssEditor = document.getElementById('css-editor');
 const toast = document.getElementById('toast');
@@ -57,7 +56,6 @@ function renderImageThumb(img) {
 
 function render(data) {
   titleInput.value = data.title;
-  bannerUrlInput.value = data.bannerUrl || '';
   if (document.activeElement !== cssEditor) {
     cssEditor.value = data.css || DEFAULT_CSS;
   }
@@ -179,10 +177,6 @@ document.getElementById('download-images-btn').addEventListener('click', () => {
 
 titleInput.addEventListener('input', () => {
   state.setTitle(titleInput.value);
-});
-
-bannerUrlInput.addEventListener('input', () => {
-  state.setBannerUrl(bannerUrlInput.value);
 });
 
 cssEditor.addEventListener('input', () => {
